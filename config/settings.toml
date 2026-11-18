@@ -1,0 +1,69 @@
+# Interview Copilot - default settings (committed).
+# Put personal overrides in config/settings.local.toml (gitignored); it is deep-merged on top of this file.
+# Secrets never live here: use the ANTHROPIC_API_KEY and DEEPGRAM_API_KEY environment variables (or .env).
+
+[profile]
+path = "profiles/example"           # active knowledge pack, relative to the repo root
+
+[ai]
+model = "claude-haiku-5-5"          # fast model for translation and answers
+effort = "low"                      # low | medium | high (lower = faster)
+disable_thinking = true             # turn off extended thinking to cut latency
+max_tokens_answer = 800
+max_tokens_translation = 300
+cache_ttl = "1h"                    # "5m" or "1h" prompt-cache lifetime
+history_turns = 3                   # previous questions sent as context
+min_words_auto = 4                  # shorter utterances never trigger an automatic answer
+auto_suggest = true                 # false = answers only on the suggest hotkey
+answer_words_target = 70
+answer_words_max = 80
+check_ready_answers = true          # quick "same subject?" check before showing a ready answer
+
+[research]
+model = "claude-sonnet-5-5"         # more precise model, used only by the research hotkey
+tool_version = "web_search_20250305"
+max_uses = 3                        # web searches per research request
+max_tokens = 1500
+timeout_s = 60
+
+[knowledge]
+warn_tokens = 100000                # warn when the cached context gets bigger than this
+
+[stt]
+provider = "auto"                   # auto | deepgram | whisper
+language = "en"
+pause_ms = 700                      # silence that marks the end of a question
+[stt.deepgram]
+model = "nova-3"
+[stt.whisper]
+model_gpu = "large-v3-turbo"
+model_cpu = "small.en"
+compute_type_gpu = "float16"
+compute_type_cpu = "int8"
+interim_every_s = 1.0               # live partial transcripts (GPU only)
+vad_threshold = 0.010               # minimum RMS treated as speech (0-1)
+
+[audio]
+device_name = ""                    # empty = default Windows output; see `interview-copilot devices`
+chunk_ms = 50
+
+[ui]
+font_family = "Segoe UI"
+font_size = 14
+answer_font_size = 15
+width = 600
+height = 820
+opacity = 0.94
+
+[hotkeys]                           # pynput format; work while the call window has focus
+suggest = "<ctrl>+<alt>+s"
+research = "<ctrl>+<alt>+d"
+clear = "<ctrl>+<alt>+c"
+pause = "<ctrl>+<alt>+p"
+scroll_down = "<ctrl>+<alt>+<down>"
+scroll_up = "<ctrl>+<alt>+<up>"
+
+[evals]
+judge_model = "claude-sonnet-5-5"
+parallel = 4                        # parallel judge calls
+pitch_words_max = 100               # word limit of the introduction ("tell me about yourself")

@@ -1,0 +1,33 @@
+{
+  "description": "Eval questions for this profile. must_contain: each item passes if ANY alternative appears (case-insensitive). must_not_contain: fails if any word appears. equivalent_to: id of the original question for transcription-error variants, otherwise null. Replace the placeholders.",
+  "facts": [
+    "Replace with a verified fact the judge must enforce, e.g. 'The candidate has 8 years of Python experience.'"
+  ],
+  "auto_fail": [
+    "Replace with an automatic-fail rule, e.g. 'Presents Rust as production experience.'"
+  ],
+  "questions": [
+    {
+      "id": 1,
+      "category": "Behavioral",
+      "question": "Tell me about yourself.",
+      "must_contain": [
+        {"term": "8 years", "alternatives": ["8 years", "eight years"]}
+      ],
+      "must_not_contain": [
+        {"description": "invented employer", "words": ["Example Corp"]}
+      ],
+      "equivalent_to": null
+    },
+    {
+      "id": 2,
+      "category": "Transcription variant",
+      "question": "Tell me about your self.",
+      "must_contain": [
+        {"term": "8 years", "alternatives": ["8 years", "eight years"]}
+      ],
+      "must_not_contain": [],
+      "equivalent_to": 1
+    }
+  ]
+}

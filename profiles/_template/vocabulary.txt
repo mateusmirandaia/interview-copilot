@@ -1,0 +1,10 @@
+# Vocabulary for speech recognition (keyterms) and spelling.
+# One term per line. Lines starting with # are comments. Keep it under 100 terms.
+# Add: your name, companies, interviewer names, technologies and acronyms of your stack.
+
+# People and companies
+# Your Name
+# Target Company
+
+# Technologies
+# FastAPI

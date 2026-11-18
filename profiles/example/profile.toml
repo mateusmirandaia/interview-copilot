@@ -1,0 +1,34 @@
+# Example profile: Alex Morgan (fictional candidate).
+# Copy profiles/_template to profiles/me to build your own.
+
+[candidate]
+name = "Alex Morgan"
+target_role = "Senior Python Backend Engineer"
+# The translation of each question and the "intent" line are written in this language.
+native_language = "Brazilian Portuguese"
+
+[ready_answers]
+# Every "## " or "### " heading in this file is one ready answer.
+file = "05-ready-answers/ready-answers.md"
+# Headings (exact text) that are not answers, e.g. a notes section.
+exclude_headings = []
+
+[research]
+# Domains allowed for the on-demand web search hotkey (Ctrl+Alt+D by default).
+allowed_domains = [
+    "docs.python.org",
+    "fastapi.tiangolo.com",
+    "docs.djangoproject.com",
+    "www.postgresql.org",
+    "docs.aws.amazon.com",
+    "docs.pytest.org",
+    "docs.github.com",
+]
+
+[transcript_replacements]
+# Applied to every transcribed question before anything else
+# (case-insensitive, whole phrase). Left side = what speech recognition writes,
+# right side = what the interviewer actually said.
+"fast API" = "FastAPI"
+"pie test" = "pytest"
+"post gress" = "Postgres"

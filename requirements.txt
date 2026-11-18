@@ -1,0 +1,10 @@
+# Runtime dependencies (mirrors pyproject.toml)
+anthropic>=0.70
+numpy>=1.26
+websockets>=12
+python-docx>=1.1
+pynput>=1.7
+beautifulsoup4>=4.12
+pyaudiowpatch>=0.2.12; sys_platform == "win32"
+# Optional, local speech-to-text (GPU recommended):
+# faster-whisper>=1.1

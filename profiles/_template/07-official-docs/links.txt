@@ -1,0 +1,6 @@
+# Official documentation pages for `python -m interview_copilot download-docs`.
+# One URL per line. Lines starting with # are comments.
+# Pages are downloaded next to this file as .md and loaded into the copilot's context.
+# Choose a few pages about the topics most likely to come up. Every page costs tokens.
+# Example:
+# https://docs.python.org/3/library/asyncio.html

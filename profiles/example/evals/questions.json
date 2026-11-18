@@ -1,0 +1,1070 @@
+{
+  "description": "Eval questions for the fictional example profile (Alex Morgan, Senior Python Backend Engineer at Northwind Pay). must_contain: each item passes if ANY alternative appears (case-insensitive). must_not_contain: fails if any word appears; items without words are judged only by the judge model. equivalent_to: id of the question this transcription-error variant should be answered like.",
+  "facts": [
+    "Alex Morgan has 8 years of Python experience (since 2018).",
+    "Employers: Contoso Logistics, Senior Backend Engineer (Mar 2022 - present); Fabrikam Health, Backend Engineer (Feb 2020 - Feb 2022); Tailspin Analytics, Python Developer (Jan 2018 - Jan 2020). Alex never worked at Northwind Pay or at any payments company.",
+    "Shipment events pipeline (Contoso Logistics): SQS standard queue + Lambda consumers, idempotent by carrier event ID with a unique constraint; 2 million events per day; webhook timeouts 4% -> 0.1%; endpoint p95 2.5 s -> 80 ms; zero duplicate status updates since launch.",
+    "Tracking API latency (Contoso Logistics): p95 900 ms -> 120 ms; N+1 from 12 queries to 2 per request; Redis cache-aside with a 30-second TTL invalidated on status-change events; DB CPU 70% -> 35%; Black Friday at 3x traffic with the same 4 containers; the tech lead's Go rewrite was dropped after a one-week profiling spike.",
+    "Appointment report query (Fabrikam Health): table with 40 million rows; 14 s -> 180 ms; composite index on (clinic_id, scheduled_at) created concurrently; counting moved to ORM annotate/aggregate.",
+    "Duplicate reminder incident (Fabrikam Health): Alex enabled Celery acks_late; a long batch task exceeded the Redis visibility timeout and was redelivered; 3,000 patients got a duplicate SMS; found 2 hours later from support tickets; after the fix (one task per reminder, unique sent record, structured logs, Sentry, retry alert) a later spike was detected in 5 minutes.",
+    "CI pipeline speed-up (Contoso Logistics): 35 min -> 8 min; flaky failures 15/week -> 1; coverage 58% -> 85%; weekly -> daily deploys; pytest-xdist, Postgres service container per job in GitHub Actions, rolling deploy to ECS.",
+    "Nightly sales ETL (Tailspin Analytics): pandas + Airflow, one task per region; 6 hours -> 50 minutes; peak memory 14 GB -> 3 GB.",
+    "Kubernetes: basic usage only (deploys with Helm charts maintained by another team, kubectl logs/describe); never designed or operated a cluster. No Kafka, Rust, Go or Java in production. No ML model training.",
+    "Certification: AWS Certified Developer - Associate (2023).",
+    "Technical: SQS standard queues are at-least-once with best-effort ordering; default visibility timeout is 30 seconds; Lambda maximum timeout is 15 minutes; CPython's GIL lets one thread run bytecode at a time and is released during blocking I/O; Python 3.13 added an optional experimental free-threaded build.",
+    "Salary: Alex never gives a number; he asks for the budgeted range."
+  ],
+  "auto_fail": [
+    "Presents Rust, Go, Java or Kafka as production experience.",
+    "Claims Alex designed, set up or operated a Kubernetes cluster.",
+    "Claims Alex worked at a payments company or at Northwind Pay.",
+    "Gives a salary number or rate.",
+    "Uses a number for a real case that differs from projects.md, or invents a new case, employer or client."
+  ],
+  "questions": [
+    {
+      "id": 1,
+      "category": "Behavioral",
+      "question": "Tell me about yourself.",
+      "must_contain": [
+        {
+          "term": "8 years",
+          "alternatives": [
+            "8 years",
+            "eight years"
+          ]
+        },
+        {
+          "term": "Contoso Logistics",
+          "alternatives": [
+            "Contoso Logistics",
+            "Contoso"
+          ]
+        },
+        {
+          "term": "FastAPI",
+          "alternatives": [
+            "FastAPI"
+          ]
+        },
+        {
+          "term": "SQS",
+          "alternatives": [
+            "SQS"
+          ]
+        }
+      ],
+      "must_not_contain": [
+        {
+          "description": "invented employer",
+          "words": [
+            "Google",
+            "Amazon",
+            "Microsoft"
+          ]
+        },
+        {
+          "description": "presents a language Alex has never shipped",
+          "words": [
+            "Rust",
+            "Golang",
+            "Java "
+          ]
+        }
+      ],
+      "equivalent_to": null
+    },
+    {
+      "id": 2,
+      "category": "Behavioral",
+      "question": "Why are you leaving Contoso Logistics?",
+      "must_contain": [
+        {
+          "term": "payments",
+          "alternatives": [
+            "payments",
+            "payment"
+          ]
+        },
+        {
+          "term": "idempotency",
+          "alternatives": [
+            "idempotency",
+            "idempotent",
+            "reliable"
+          ]
+        }
+      ],
+      "must_not_contain": [
+        {
+          "description": "criticizes the current employer",
+          "words": [
+            "toxic",
+            "bad management",
+            "underpaid"
+          ]
+        }
+      ],
+      "equivalent_to": null
+    },
+    {
+      "id": 3,
+      "category": "Behavioral",
+      "question": "Why do you want to join Northwind Pay?",
+      "must_contain": [
+        {
+          "term": "payments",
+          "alternatives": [
+            "payments",
+            "payment"
+          ]
+        },
+        {
+          "term": "webhooks",
+          "alternatives": [
+            "webhooks",
+            "webhook",
+            "event-driven"
+          ]
+        },
+        {
+          "term": "FastAPI",
+          "alternatives": [
+            "FastAPI",
+            "PostgreSQL",
+            "Postgres"
+          ]
+        }
+      ],
+      "must_not_contain": [],
+      "equivalent_to": null
+    },
+    {
+      "id": 4,
+      "category": "Behavioral",
+      "question": "What would you say is your biggest strength?",
+      "must_contain": [
+        {
+          "term": "measure",
+          "alternatives": [
+            "measure",
+            "profile",
+            "data"
+          ]
+        }
+      ],
+      "must_not_contain": [],
+      "equivalent_to": null
+    },
+    {
+      "id": 5,
+      "category": "Behavioral",
+      "question": "What's your biggest weakness?",
+      "must_contain": [
+        {
+          "term": "pair",
+          "alternatives": [
+            "pair",
+            "sharing",
+            "share"
+          ]
+        }
+      ],
+      "must_not_contain": [
+        {
+          "description": "fake weakness clichés",
+          "words": [
+            "perfectionist",
+            "work too hard"
+          ]
+        }
+      ],
+      "equivalent_to": null
+    },
+    {
+      "id": 6,
+      "category": "Behavioral",
+      "question": "Tell me about a time you disagreed with a technical decision.",
+      "must_contain": [
+        {
+          "term": "Go",
+          "alternatives": [
+            "Go"
+          ]
+        },
+        {
+          "term": "900",
+          "alternatives": [
+            "900"
+          ]
+        },
+        {
+          "term": "120",
+          "alternatives": [
+            "120"
+          ]
+        },
+        {
+          "term": "profiling",
+          "alternatives": [
+            "profiling",
+            "profile"
+          ]
+        }
+      ],
+      "must_not_contain": [
+        {
+          "description": "number not in the case",
+          "words": [
+            "800",
+            "100 milliseconds",
+            "150"
+          ]
+        }
+      ],
+      "equivalent_to": null
+    },
+    {
+      "id": 7,
+      "category": "Behavioral",
+      "question": "Tell me about a time you made a mistake in production.",
+      "must_contain": [
+        {
+          "term": "3,000",
+          "alternatives": [
+            "3,000",
+            "3000",
+            "three thousand"
+          ]
+        },
+        {
+          "term": "Celery",
+          "alternatives": [
+            "Celery"
+          ]
+        },
+        {
+          "term": "postmortem",
+          "alternatives": [
+            "postmortem",
+            "post-mortem"
+          ]
+        },
+        {
+          "term": "5 minutes",
+          "alternatives": [
+            "5 minutes",
+            "five minutes"
+          ]
+        }
+      ],
+      "must_not_contain": [
+        {
+          "description": "mixes in another case",
+          "words": [
+            "Contoso",
+            "SQS"
+          ]
+        }
+      ],
+      "equivalent_to": null
+    },
+    {
+      "id": 8,
+      "category": "Behavioral",
+      "question": "Have you worked in payments or fintech before?",
+      "must_contain": [
+        {
+          "term": "not directly",
+          "alternatives": [
+            "not directly",
+            "haven't",
+            "have not",
+            "no direct"
+          ]
+        },
+        {
+          "term": "idempotent",
+          "alternatives": [
+            "idempotent",
+            "idempotency"
+          ]
+        }
+      ],
+      "must_not_contain": [
+        {
+          "description": "claims payments employment",
+          "words": [
+            "worked at a payments company",
+            "at a bank"
+          ]
+        }
+      ],
+      "equivalent_to": null
+    },
+    {
+      "id": 9,
+      "category": "Python",
+      "question": "What is the GIL and when does it matter?",
+      "must_contain": [
+        {
+          "term": "one thread",
+          "alternatives": [
+            "one thread",
+            "single thread"
+          ]
+        },
+        {
+          "term": "I/O",
+          "alternatives": [
+            "I/O",
+            "IO"
+          ]
+        },
+        {
+          "term": "CPU",
+          "alternatives": [
+            "CPU"
+          ]
+        }
+      ],
+      "must_not_contain": [
+        {
+          "description": "says the GIL makes code thread-safe",
+          "words": [
+            "GIL makes code thread-safe",
+            "no need for locks"
+          ]
+        }
+      ],
+      "equivalent_to": null
+    },
+    {
+      "id": 10,
+      "category": "Python",
+      "question": "When would you use asyncio, threads or multiprocessing?",
+      "must_contain": [
+        {
+          "term": "asyncio",
+          "alternatives": [
+            "asyncio"
+          ]
+        },
+        {
+          "term": "CPU-bound",
+          "alternatives": [
+            "CPU-bound",
+            "CPU bound",
+            "CPU"
+          ]
+        },
+        {
+          "term": "multiprocessing",
+          "alternatives": [
+            "multiprocessing",
+            "processes"
+          ]
+        }
+      ],
+      "must_not_contain": [],
+      "equivalent_to": null
+    },
+    {
+      "id": 11,
+      "category": "Python",
+      "question": "What's the difference between a dataclass and a Pydantic model?",
+      "must_contain": [
+        {
+          "term": "validation",
+          "alternatives": [
+            "validation",
+            "validate",
+            "validates"
+          ]
+        }
+      ],
+      "must_not_contain": [],
+      "equivalent_to": null
+    },
+    {
+      "id": 12,
+      "category": "Python",
+      "question": "A long-running Python worker keeps growing in memory. How do you investigate it?",
+      "must_contain": [
+        {
+          "term": "tracemalloc",
+          "alternatives": [
+            "tracemalloc",
+            "snapshot",
+            "profil"
+          ]
+        }
+      ],
+      "must_not_contain": [],
+      "equivalent_to": null
+    },
+    {
+      "id": 13,
+      "category": "APIs",
+      "question": "In FastAPI, what is the difference between async def and def endpoints?",
+      "must_contain": [
+        {
+          "term": "thread pool",
+          "alternatives": [
+            "thread pool",
+            "threadpool",
+            "threads"
+          ]
+        },
+        {
+          "term": "event loop",
+          "alternatives": [
+            "event loop",
+            "block",
+            "blocking"
+          ]
+        }
+      ],
+      "must_not_contain": [],
+      "equivalent_to": null
+    },
+    {
+      "id": 14,
+      "category": "APIs",
+      "question": "Our API traffic will grow ten times next year. How would you scale it?",
+      "must_contain": [
+        {
+          "term": "stateless",
+          "alternatives": [
+            "stateless",
+            "instances",
+            "horizontal"
+          ]
+        },
+        {
+          "term": "cache",
+          "alternatives": [
+            "cache",
+            "Redis"
+          ]
+        },
+        {
+          "term": "measure",
+          "alternatives": [
+            "measure",
+            "profile",
+            "bottleneck"
+          ]
+        }
+      ],
+      "must_not_contain": [
+        {
+          "description": "starts with a rewrite or microservices",
+          "words": [
+            "rewrite it",
+            "microservices first"
+          ]
+        }
+      ],
+      "equivalent_to": null
+    },
+    {
+      "id": 15,
+      "category": "APIs",
+      "question": "How would you make a payment endpoint safe when the client retries the same POST?",
+      "must_contain": [
+        {
+          "term": "idempotency key",
+          "alternatives": [
+            "idempotency key",
+            "Idempotency-Key",
+            "idempotent"
+          ]
+        },
+        {
+          "term": "unique constraint",
+          "alternatives": [
+            "unique constraint",
+            "unique"
+          ]
+        }
+      ],
+      "must_not_contain": [],
+      "equivalent_to": null
+    },
+    {
+      "id": 16,
+      "category": "APIs",
+      "question": "What's your caching strategy, and how do you handle invalidation?",
+      "must_contain": [
+        {
+          "term": "cache-aside",
+          "alternatives": [
+            "cache-aside",
+            "cache aside"
+          ]
+        },
+        {
+          "term": "TTL",
+          "alternatives": [
+            "TTL",
+            "expire"
+          ]
+        },
+        {
+          "term": "Redis",
+          "alternatives": [
+            "Redis"
+          ]
+        }
+      ],
+      "must_not_contain": [
+        {
+          "description": "wrong TTL from the case",
+          "words": [
+            "60 seconds",
+            "5 minutes"
+          ]
+        }
+      ],
+      "equivalent_to": null
+    },
+    {
+      "id": 17,
+      "category": "Databases",
+      "question": "A query is slow in production. Walk me through what you do.",
+      "must_contain": [
+        {
+          "term": "EXPLAIN ANALYZE",
+          "alternatives": [
+            "EXPLAIN ANALYZE",
+            "EXPLAIN"
+          ]
+        },
+        {
+          "term": "index",
+          "alternatives": [
+            "index"
+          ]
+        }
+      ],
+      "must_not_contain": [
+        {
+          "description": "number not in the case",
+          "words": [
+            "10 seconds",
+            "200 milliseconds",
+            "50 million"
+          ]
+        }
+      ],
+      "equivalent_to": null
+    },
+    {
+      "id": 18,
+      "category": "Databases",
+      "question": "Does the column order matter in a composite index?",
+      "must_contain": [
+        {
+          "term": "leftmost",
+          "alternatives": [
+            "leftmost",
+            "first column",
+            "left-most"
+          ]
+        },
+        {
+          "term": "yes",
+          "alternatives": [
+            "yes",
+            "does matter",
+            "order matters"
+          ]
+        }
+      ],
+      "must_not_contain": [],
+      "equivalent_to": null
+    },
+    {
+      "id": 19,
+      "category": "Databases",
+      "question": "How do you add an index to a large production table without downtime?",
+      "must_contain": [
+        {
+          "term": "CONCURRENTLY",
+          "alternatives": [
+            "CONCURRENTLY",
+            "concurrently"
+          ]
+        }
+      ],
+      "must_not_contain": [],
+      "equivalent_to": null
+    },
+    {
+      "id": 20,
+      "category": "Databases",
+      "question": "In Django, what's the difference between select_related and prefetch_related?",
+      "must_contain": [
+        {
+          "term": "JOIN",
+          "alternatives": [
+            "JOIN",
+            "join"
+          ]
+        },
+        {
+          "term": "separate query",
+          "alternatives": [
+            "separate query",
+            "second query",
+            "separate queries",
+            "extra query"
+          ]
+        },
+        {
+          "term": "many-to-many",
+          "alternatives": [
+            "many-to-many",
+            "ManyToMany",
+            "many to many",
+            "reverse"
+          ]
+        }
+      ],
+      "must_not_contain": [],
+      "equivalent_to": null
+    },
+    {
+      "id": 21,
+      "category": "AWS",
+      "question": "What's the difference between SQS standard and FIFO queues?",
+      "must_contain": [
+        {
+          "term": "at-least-once",
+          "alternatives": [
+            "at-least-once",
+            "at least once"
+          ]
+        },
+        {
+          "term": "order",
+          "alternatives": [
+            "order",
+            "ordering"
+          ]
+        },
+        {
+          "term": "duplicate",
+          "alternatives": [
+            "duplicate",
+            "deduplication"
+          ]
+        }
+      ],
+      "must_not_contain": [
+        {
+          "description": "claims exactly-once for standard",
+          "words": [
+            "standard queues are exactly-once"
+          ]
+        }
+      ],
+      "equivalent_to": null
+    },
+    {
+      "id": 22,
+      "category": "AWS",
+      "question": "What happens in SQS if processing a message takes longer than the visibility timeout?",
+      "must_contain": [
+        {
+          "term": "visible again",
+          "alternatives": [
+            "visible again",
+            "redelivered",
+            "delivered again",
+            "processed twice"
+          ]
+        },
+        {
+          "term": "idempotent",
+          "alternatives": [
+            "idempotent",
+            "idempotency"
+          ]
+        }
+      ],
+      "must_not_contain": [
+        {
+          "description": "wrong default",
+          "words": [
+            "60 seconds by default",
+            "default is 60"
+          ]
+        }
+      ],
+      "equivalent_to": null
+    },
+    {
+      "id": 23,
+      "category": "AWS",
+      "question": "How much Kubernetes experience do you have?",
+      "must_contain": [
+        {
+          "term": "basic",
+          "alternatives": [
+            "basic"
+          ]
+        },
+        {
+          "term": "Helm",
+          "alternatives": [
+            "Helm"
+          ]
+        },
+        {
+          "term": "ECS",
+          "alternatives": [
+            "ECS"
+          ]
+        }
+      ],
+      "must_not_contain": [
+        {
+          "description": "claims to operate clusters",
+          "words": [
+            "managed our cluster",
+            "designed the cluster",
+            "set up the cluster",
+            "administered"
+          ]
+        }
+      ],
+      "equivalent_to": null
+    },
+    {
+      "id": 24,
+      "category": "AWS",
+      "question": "Have you used Kafka?",
+      "must_contain": [
+        {
+          "term": "haven't",
+          "alternatives": [
+            "haven't",
+            "have not",
+            "no production",
+            "not in production"
+          ]
+        },
+        {
+          "term": "SQS",
+          "alternatives": [
+            "SQS"
+          ]
+        }
+      ],
+      "must_not_contain": [
+        {
+          "description": "claims Kafka production experience",
+          "words": [
+            "we used Kafka",
+            "I used Kafka in production"
+          ]
+        }
+      ],
+      "equivalent_to": null
+    },
+    {
+      "id": 25,
+      "category": "Testing & CI",
+      "question": "What is your testing strategy for a backend service?",
+      "must_contain": [
+        {
+          "term": "pyramid",
+          "alternatives": [
+            "pyramid",
+            "unit"
+          ]
+        },
+        {
+          "term": "integration",
+          "alternatives": [
+            "integration"
+          ]
+        },
+        {
+          "term": "pytest",
+          "alternatives": [
+            "pytest",
+            "Postgres",
+            "PostgreSQL"
+          ]
+        }
+      ],
+      "must_not_contain": [],
+      "equivalent_to": null
+    },
+    {
+      "id": 26,
+      "category": "Testing & CI",
+      "question": "Your test suite takes 35 minutes. How would you make it faster?",
+      "must_contain": [
+        {
+          "term": "parallel",
+          "alternatives": [
+            "parallel",
+            "pytest-xdist",
+            "xdist"
+          ]
+        },
+        {
+          "term": "8 minutes",
+          "alternatives": [
+            "8 minutes",
+            "eight minutes"
+          ]
+        }
+      ],
+      "must_not_contain": [
+        {
+          "description": "wrong numbers from the case",
+          "words": [
+            "10 minutes",
+            "20 minutes",
+            "5 minutes"
+          ]
+        }
+      ],
+      "equivalent_to": null
+    },
+    {
+      "id": 27,
+      "category": "System design",
+      "question": "How would you design a system to receive payment provider webhooks reliably?",
+      "must_contain": [
+        {
+          "term": "queue",
+          "alternatives": [
+            "queue",
+            "SQS"
+          ]
+        },
+        {
+          "term": "idempotent",
+          "alternatives": [
+            "idempotent",
+            "idempotency",
+            "unique"
+          ]
+        },
+        {
+          "term": "dead-letter",
+          "alternatives": [
+            "dead-letter",
+            "DLQ",
+            "dead letter"
+          ]
+        }
+      ],
+      "must_not_contain": [],
+      "equivalent_to": null
+    },
+    {
+      "id": 28,
+      "category": "System design",
+      "question": "How do you know a service is healthy in production?",
+      "must_contain": [
+        {
+          "term": "structured",
+          "alternatives": [
+            "structured",
+            "logs"
+          ]
+        },
+        {
+          "term": "correlation ID",
+          "alternatives": [
+            "correlation ID",
+            "correlation id",
+            "request ID"
+          ]
+        },
+        {
+          "term": "alert",
+          "alternatives": [
+            "alert",
+            "alarm"
+          ]
+        }
+      ],
+      "must_not_contain": [],
+      "equivalent_to": null
+    },
+    {
+      "id": 29,
+      "category": "Closing",
+      "question": "What are your salary expectations?",
+      "must_contain": [
+        {
+          "term": "range",
+          "alternatives": [
+            "range",
+            "budget"
+          ]
+        }
+      ],
+      "must_not_contain": [
+        {
+          "description": "gives a salary number",
+          "words": [
+            "$",
+            "USD",
+            "per hour",
+            "per year",
+            "k a year"
+          ]
+        }
+      ],
+      "equivalent_to": null
+    },
+    {
+      "id": 30,
+      "category": "Closing",
+      "question": "Do you have any questions for us?",
+      "must_contain": [
+        {
+          "term": "idempotency",
+          "alternatives": [
+            "idempotency",
+            "on-call",
+            "on call",
+            "90 days",
+            "webhooks"
+          ]
+        }
+      ],
+      "must_not_contain": [],
+      "equivalent_to": null
+    },
+    {
+      "id": 31,
+      "category": "Transcription variant",
+      "question": "In fast API, what is the difference between async def and def endpoints?",
+      "must_contain": [
+        {
+          "term": "thread pool",
+          "alternatives": [
+            "thread pool",
+            "threadpool",
+            "threads"
+          ]
+        },
+        {
+          "term": "event loop",
+          "alternatives": [
+            "event loop",
+            "block",
+            "blocking"
+          ]
+        }
+      ],
+      "must_not_contain": [],
+      "equivalent_to": 13
+    },
+    {
+      "id": 32,
+      "category": "Transcription variant",
+      "question": "What is your testing strategy with pie test?",
+      "must_contain": [
+        {
+          "term": "pyramid",
+          "alternatives": [
+            "pyramid",
+            "unit"
+          ]
+        },
+        {
+          "term": "integration",
+          "alternatives": [
+            "integration"
+          ]
+        },
+        {
+          "term": "pytest",
+          "alternatives": [
+            "pytest",
+            "Postgres",
+            "PostgreSQL"
+          ]
+        }
+      ],
+      "must_not_contain": [],
+      "equivalent_to": 25
+    },
+    {
+      "id": 33,
+      "category": "Transcription variant",
+      "question": "In jungle, what's the difference between select related and prefetch related?",
+      "must_contain": [
+        {
+          "term": "JOIN",
+          "alternatives": [
+            "JOIN",
+            "join"
+          ]
+        },
+        {
+          "term": "separate query",
+          "alternatives": [
+            "separate query",
+            "second query",
+            "separate queries",
+            "extra query"
+          ]
+        },
+        {
+          "term": "many-to-many",
+          "alternatives": [
+            "many-to-many",
+            "ManyToMany",
+            "many to many",
+            "reverse"
+          ]
+        }
+      ],
+      "must_not_contain": [],
+      "equivalent_to": 20
+    },
+    {
+      "id": 34,
+      "category": "Transcription variant",
+      "question": "A query is slow in post gress. Walk me through what you do.",
+      "must_contain": [
+        {
+          "term": "EXPLAIN ANALYZE",
+          "alternatives": [
+            "EXPLAIN ANALYZE",
+            "EXPLAIN"
+          ]
+        },
+        {
+          "term": "index",
+          "alternatives": [
+            "index"
+          ]
+        }
+      ],
+      "must_not_contain": [
+        {
+          "description": "number not in the case",
+          "words": [
+            "10 seconds",
+            "200 milliseconds",
+            "50 million"
+          ]
+        }
+      ],
+      "equivalent_to": 17
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "interview-copilot"
+version = "2.0.0"
+description = "Real-time AI copilot for job interviews in English: live transcription, translation and spoken answers grounded in your own profile."
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Mateus Maia Miranda" }]
+requires-python = ">=3.11"
+keywords = ["interview", "copilot", "anthropic", "claude", "speech-to-text", "deepgram", "whisper"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: Microsoft :: Windows",
+    "Environment :: Win32 (MS Windows)",
+    "Topic :: Multimedia :: Sound/Audio :: Speech",
+]
+dependencies = [
+    "anthropic>=0.70",
+    "numpy>=1.26",
+    "websockets>=12",
+    "python-docx>=1.1",
+    "pynput>=1.7",
+    "beautifulsoup4>=4.12",
+    "pyaudiowpatch>=0.2.12; sys_platform == 'win32'",
+]
+
+[project.optional-dependencies]
+whisper = ["faster-whisper>=1.1"]
+dev = ["pytest>=8", "ruff>=0.5"]
+
+[project.scripts]
+interview-copilot = "interview_copilot.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "BLE"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff.lint.per-file-ignores]
+# prompt templates keep one paragraph per line so they read like the text the model receives
+"src/interview_copilot/ai/prompts.py" = ["E501"]
+"src/interview_copilot/evals/judge.py" = ["E501"]

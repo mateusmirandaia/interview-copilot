@@ -1,0 +1,60 @@
+# Vocabulary for speech recognition (Deepgram keyterms / keywords) and spelling.
+# One term per line. Lines starting with # are comments. Keep it under 100 terms.
+
+# People and companies
+Alex Morgan
+Northwind Pay
+Contoso Logistics
+Fabrikam Health
+Tailspin Analytics
+Daniel Reyes
+Priya Shah
+
+# Python
+Python
+GIL
+asyncio
+multiprocessing
+Pydantic
+py-spy
+
+# Web frameworks and libraries
+FastAPI
+Django
+Django REST Framework
+SQLAlchemy
+Celery
+pandas
+Airflow
+
+# Data stores
+PostgreSQL
+Postgres
+Redis
+EXPLAIN ANALYZE
+pg_stat_statements
+
+# AWS and infrastructure
+AWS
+Lambda
+SQS
+ECS
+Fargate
+CloudWatch
+Docker
+Kubernetes
+Helm
+kubectl
+
+# Testing and CI/CD
+pytest
+pytest-xdist
+factory_boy
+GitHub Actions
+Sentry
+
+# Concepts
+idempotency
+dead-letter queue
+cache-aside
+p95

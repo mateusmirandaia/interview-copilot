@@ -1,0 +1,45 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+build/
+dist/
+.eggs/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# --- Virtual environments ---
+.venv/
+venv/
+env/
+
+# --- Secrets and local settings ---
+.env
+config/settings.local.toml
+
+# --- Runtime output ---
+logs/*
+!logs/.gitkeep
+*.wav
+
+# --- Profiles: only the docs, the template and the fictional example are committed ---
+profiles/*
+!profiles/README.md
+!profiles/_template/
+!profiles/example/
+
+# --- Office temp files ---
+~$*
+
+# --- IDE / OS ---
+.vscode/
+.idea/
+*.swp
+*.code-workspace
+.DS_Store
+Thumbs.db
+desktop.ini

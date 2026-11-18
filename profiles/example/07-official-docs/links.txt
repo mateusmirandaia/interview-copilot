@@ -1,0 +1,24 @@
+# Official documentation pages for `python -m interview_copilot download-docs`.
+# One URL per line. Lines starting with # are comments.
+# Downloaded pages are saved next to this file as .md and loaded into the copilot's context.
+# Keep the list short: every page costs tokens on each answer.
+
+# Python: asyncio, the GIL and the free-threaded build
+https://docs.python.org/3/library/asyncio.html
+https://docs.python.org/3/glossary.html#term-global-interpreter-lock
+https://docs.python.org/3/howto/free-threading-python.html
+
+# FastAPI: async def vs def, dependency injection
+https://fastapi.tiangolo.com/async/
+https://fastapi.tiangolo.com/tutorial/dependencies/
+
+# Django: ORM performance (select_related, prefetch_related, query optimization)
+https://docs.djangoproject.com/en/stable/topics/db/optimization/
+
+# PostgreSQL: composite indexes and EXPLAIN
+https://www.postgresql.org/docs/current/indexes-multicolumn.html
+https://www.postgresql.org/docs/current/using-explain.html
+
+# AWS: SQS visibility timeout and Lambda with SQS (batches, partial failures)
+https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-visibility-timeout.html
+https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html

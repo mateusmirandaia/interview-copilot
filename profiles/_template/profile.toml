@@ -1,0 +1,29 @@
+# Profile metadata and per-profile options.
+# Replace every value below. This file must stay valid TOML.
+
+[candidate]
+# Your name, as the copilot should refer to you.
+name = "Your Name"
+# The role you are interviewing for.
+target_role = "Your Target Role"
+# The translation of each question and the "intent" line are written in this language.
+# Use English if you do not need a translation.
+native_language = "English"
+
+[ready_answers]
+# Markdown: every "## " or "### " heading is one ready answer.
+# Word (.docx) is also supported: Heading 2 / Heading 3.
+file = "05-ready-answers/ready-answers.md"
+# Headings (exact text) that are NOT answers, e.g. "Notes".
+exclude_headings = []
+
+[research]
+# Domains allowed for the on-demand web search hotkey.
+# Use the official documentation sites of your stack (same domains as 07-official-docs/links.txt).
+allowed_domains = ["docs.python.org"]
+
+[transcript_replacements]
+# Fixes applied to every transcribed question before anything else
+# (case-insensitive, whole phrase). Left = what speech recognition writes, right = what was said.
+# Add one line each time you see the same mistake in the logs, for example:
+# "fast API" = "FastAPI"
