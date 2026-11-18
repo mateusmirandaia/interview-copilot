@@ -1,223 +1,311 @@
-# Interview Copilot
+<div align="center">
 
-**A real-time copilot for English-language job interviews. It listens to the call, translates each question into your native language and shows a complete, ready-to-speak answer built only from your own resume, projects and notes.**
+# 🎧 Interview Copilot
 
-[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
-[![Platform: Windows](https://img.shields.io/badge/platform-Windows%2010%2F11-0078D6.svg)](#requirements)
-[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+**Your real-time copilot for English-language job interviews.**
+
+It listens to the call, translates each question into your language and shows a complete,
+ready-to-speak answer, built **only** from your own resume, projects and notes.
+
 [![CI](https://github.com/mateusmirandaia/interview-copilot/actions/workflows/ci.yml/badge.svg)](https://github.com/mateusmirandaia/interview-copilot/actions/workflows/ci.yml)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-3776AB.svg?logo=python&logoColor=white)](https://www.python.org/downloads/)
+[![Windows 10/11](https://img.shields.io/badge/platform-Windows%2010%2F11-0078D6.svg)](#-requirements)
+[![Claude](https://img.shields.io/badge/AI-Claude%20Haiku%20%2B%20Sonnet-D97757.svg)](https://docs.claude.com/)
+[![Deepgram](https://img.shields.io/badge/STT-Deepgram%20nova--3-13EF93.svg)](https://developers.deepgram.com/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-> Leia em português: [README.pt-BR.md](README.pt-BR.md)
+[Quick start](#-quick-start-5-minutes) ·
+[How it works](#-how-it-works) ·
+[Your profile](#-your-profile-the-knowledge-pack) ·
+[Evals](#-evals-measure-and-refine) ·
+[Docs](#-documentation) ·
+[🇧🇷 Português](README.pt-BR.md)
+
+<br/>
+
+<img src="docs/images/overlay-new-answer.png" alt="Interview Copilot overlay: question, translation, intent and a suggested answer" width="760"/>
+
+<sub>The real overlay, rendered with the fictional example profile that ships with the repo.</sub>
+
+</div>
 
 ---
 
-## What it does
+## ✨ Highlights
 
-1. **Captures system audio** (Teams, Meet, Zoom, a YouTube video) through WASAPI loopback. It hears the interviewer, not your microphone.
-2. **Transcribes in streaming** with Deepgram `nova-3` (cloud, with keyterm prompting) or `faster-whisper` (local).
-3. **Detects the end of the question** after a short pause (`pause_ms`, default 700 ms).
-4. **Runs two Claude calls in parallel:**
-   - a short **translation** of the question into your native language;
-   - the **answer**: either one of your **ready answers**, shown verbatim, or a new spoken answer of about 70 words written only from your profile.
-5. **Checks ready answers** with a quick "same subject?" call before showing them, and regenerates when the match is wrong.
-6. **Shows everything in an always-on-top overlay**: live transcript, question, translation, a one-line *intent* ("what they want to know"), the answer and the measured latency.
-7. **On demand** (hotkey), re-answers the last question with **web search restricted to the official documentation domains** of your profile.
+| | |
+|---|---|
+| ⚡ **About 1 second** | From the end of the question to the first words on screen, using `claude-haiku-5-5`, prompt caching and parallel calls |
+| 🌍 **Live translation** | Each question is translated into your native language, with a one-line *intent* that tells you what they really want to know |
+| 📝 **Your answers, verbatim** | Prepared answers are shown exactly as you wrote them. The model only picks *which* one, and a second check confirms it is the same question |
+| 🧠 **Grounded, never invented** | Facts only from your profile, stories only from your real projects, no made-up numbers. If you haven't done something, it says so |
+| 📚 **Official docs on demand** | One hotkey re-answers using web search restricted to the official documentation sites you allow |
+| 🧪 **Evals built in** | Run a question set through the real engine, score it with an LLM judge and compare rounds as you refine your files |
+| 🧩 **Any candidate, any role** | One folder per profile. Swap the folder, and the copilot becomes someone else's |
 
-Measured in practice: **about 0.5 to 1 s from the end of the question to the first words on screen** for ready answers, plus about 0.7 s of pause detection.
+<div align="center">
+<img src="docs/images/overlay-ready-answer.png" alt="A ready answer shown verbatim" width="760"/>
+<br/><sub>A prepared answer recognized from a differently worded question and shown verbatim.</sub>
+</div>
 
-## Architecture
+---
+
+## 🚀 Quick start (5 minutes)
+
+### ✅ Requirements
+
+- **Windows 10 or 11** (system audio is captured with WASAPI loopback)
+- **Python 3.11+** (3.12 recommended), from [python.org](https://www.python.org/downloads/), with *Add python.exe to PATH* checked
+- An **Anthropic API key**: [console.anthropic.com](https://console.anthropic.com/)
+- A **Deepgram API key** (recommended, free starting credit): [console.deepgram.com](https://console.deepgram.com/). Without it, the app falls back to local `faster-whisper`
+
+### 1. Install
+
+```powershell
+git clone https://github.com/mateusmirandaia/interview-copilot.git
+cd interview-copilot
+.\scripts\setup.ps1              # creates .venv and installs everything (add -Whisper for local STT)
+.\.venv\Scripts\Activate.ps1
+```
+
+### 2. Add your API keys
+
+```powershell
+copy .env.example .env           # then open .env and paste your keys
+```
+
+<details>
+<summary>Prefer environment variables?</summary>
+
+```powershell
+setx ANTHROPIC_API_KEY "sk-ant-..."
+setx DEEPGRAM_API_KEY "your-deepgram-key"
+# open a NEW terminal afterwards: setx only applies to new windows
+```
+
+Real environment variables win over `.env`. Keys are never read from code or committed files.
+</details>
+
+### 3. Check and try it
+
+```powershell
+python -m interview_copilot check                              # keys, profile, ready answers, sample questions
+python -m interview_copilot simulate "Tell me about yourself." # one answer in the terminal, no audio
+python -m interview_copilot test-audio                         # play any video: the level meter must move
+python -m interview_copilot run                                # 🎉 the overlay with live audio
+```
+
+Every command works right after setup, because the default profile is the fictional example (*Alex Morgan, Senior Python Backend Engineer*). Next step: [make it yours](#-make-it-yours).
+
+> 💡 **Shortcut:** `.\scripts\run.ps1` activates the venv and runs any command (default `run`). `scripts\run.cmd` does the same with a double-click.
+
+### 🎬 Rehearse with a YouTube mock interview
+
+1. Search YouTube for **"mock job interview questions and answers"** (or "Python backend interview questions").
+2. Run `python -m interview_copilot run` and play the video.
+3. Watch questions, translations and answers appear. No audio? Run `python -m interview_copilot devices` and set `[audio] device_name`.
+
+---
+
+## 🧭 How it works
 
 ```mermaid
 flowchart LR
-    A["System audio<br/>(WASAPI loopback)"] --> B["Speech-to-text<br/>Deepgram nova-3 or faster-whisper"]
-    B -->|"utterance after pause_ms"| C["CopilotEngine"]
-    K[("Knowledge pack<br/>profiles/&lt;name&gt;/<br/>cached prompt block")] -.-> C
-    C --> T["Translation<br/>(native language)"]
-    C --> S["Answer stream<br/>claude-haiku-5-5"]
-    S -->|"READY: id"| R{"Same subject?<br/>quick check"}
-    R -->|yes| V["Ready answer<br/>shown verbatim"]
-    R -->|no| G["Forced new answer"]
+    A["🔊 System audio<br/>(WASAPI loopback)"] --> B["📝 Speech-to-text<br/>Deepgram nova-3 or faster-whisper"]
+    B -->|"question ended<br/>(pause_ms)"| C["⚙️ CopilotEngine"]
+    K[("📁 Your profile<br/>cached prompt block")] -.-> C
+    C --> T["🌍 Translation"]
+    C --> S["💬 Answer stream<br/>claude-haiku-5-5"]
+    S -->|"READY: id"| R{"Same subject?"}
+    R -->|yes| V["📝 Ready answer<br/>verbatim"]
+    R -->|no| G["New answer"]
     S -->|"READY: NONE"| N["New spoken answer<br/>(~70 words)"]
-    T --> O["Overlay window"]
+    T --> O["🖥️ Overlay"]
     V --> O
     G --> O
     N --> O
 ```
 
-More detail (threads, queues, latency budget, prompt caching): [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+1. **Captures the computer's sound** (Teams, Meet, Zoom, a video). It hears the interviewer, not your microphone.
+2. **Transcribes in streaming** and detects the end of the question after a short pause (default 700 ms).
+3. **Runs two Claude calls in parallel**: a short translation, and the answer (a ready answer, or a new ~70-word spoken answer from your profile).
+4. **Double-checks ready answers** with a quick "same subject?" call, and regenerates when the match is wrong.
+5. **Shows everything** in an always-on-top window: live transcript, question, translation, intent, answer and measured latency.
 
-## Features
+Threads, queues, latency budget and prompt caching: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
-- **Fast by design**: `claude-haiku-5-5` (the fastest Claude model) with thinking disabled and `effort = "low"`, prompt caching of the whole knowledge block (1 h TTL, warmed at startup), translation in parallel.
-- **Ready answers, verbatim**: your prepared answers are displayed exactly as you wrote them. The model only picks *which* one, and a second quick check confirms it is the same question.
-- **Grounded answers**: facts only from your profile, real stories only from your projects file, one case per answer, no invented numbers. If you have not done something, the answer says so first and pivots to what you know.
-- **Speech-recognition aware**: a vocabulary file feeds Deepgram keyterms (up to 100) and spelling fixes; transcript replacements fix recurring mistakes before anything else.
-- **Official docs**: download reference pages into the profile (`download-docs`), or press a hotkey to search them live with `claude-sonnet-5-5` and the Anthropic web search tool, restricted to your allowed domains.
-- **Generic profiles**: one folder per candidate. A fictional, fully working example (*Alex Morgan, Senior Python Backend Engineer*) ships with the repo.
-- **Evals**: run a question set through the real engine, score it with an LLM judge, and compare rounds as you refine your files.
-- **Testable without audio**: `simulate`, `check` and the full unit test suite run on Linux CI with an offline mock server.
+---
 
-## The knowledge pack (your profile)
+## 📁 Your profile (the knowledge pack)
 
-Everything the copilot knows about you lives in one folder under `profiles/`. The active profile is `[profile] path` in the settings (default `profiles/example`) or `--profile PATH` on any command.
+Everything the copilot knows about you lives in **one folder** under `profiles/`. It reads every `.md`, `.txt` and `.docx` inside the numbered folders and builds one cached context block.
 
-The loader reads every `.md`, `.txt` and `.docx` file inside the numbered folders, in path order, and builds one cached context block. Each folder has a clear job:
-
-| Folder / file | What to put there | Example file |
-|---|---|---|
-| `profile.toml` | Candidate name, target role, native language, ready-answers file, allowed research domains, transcript replacements | `profiles/example/profile.toml` |
-| `01-instructions/` | How the copilot must behave **for this candidate and this interview**: interview focus, tone, candidate-specific do's and don'ts | `01-instructions/instructions.md` |
-| `02-resume/` | **Your resume**: summary, stack, experience, education. This is where the copilot reads who you are | `02-resume/resume.md` |
-| `03-projects/` | **Your real cases** (the only source of stories, used exactly as written) and a `Topic → case` map table | `03-projects/projects.md` |
-| `04-skills/` | **Technical knowledge**, one file per skill, language or platform | `04-skills/python.md`, `04-skills/fastapi.md`, `04-skills/sql.md` |
-| `05-ready-answers/` | **Prepared answers** (`.md` or `.docx`). Each `##` / `###` heading is one answer, shown verbatim when the question matches | `05-ready-answers/ready-answers.md` |
-| `06-job/` | The **target job**: description, company, interviewer notes, questions you want to ask | `06-job/job.md` |
-| `07-official-docs/` | `links.txt` (one URL per line) and the pages downloaded from it as `.md`. Outranks the model's general knowledge | `07-official-docs/links.txt` |
-| `vocabulary.txt` | Names and terms the transcription must get right (one per line). Sent as STT keyterms and spelling hints | `profiles/example/vocabulary.txt` |
-| `evals/questions.json` | Test questions for this profile, with expected terms and forbidden words | `profiles/example/evals/questions.json` |
-
-Start from `profiles/_template/` (empty skeleton) or read `profiles/example/` to see a complete profile. Step-by-step guide and writing rules: [docs/CUSTOMIZING.md](docs/CUSTOMIZING.md).
-
-Your own profile (for example `profiles/me/`) is **gitignored**: only `profiles/README.md`, `_template/` and `example/` are committed.
-
-## Quick start (Windows, PowerShell)
-
-### Requirements
-
-- Windows 10 or 11 (audio loopback uses WASAPI).
-- Python 3.11 or newer (3.12 recommended).
-- An [Anthropic API key](https://console.anthropic.com/).
-- A [Deepgram API key](https://console.deepgram.com/) (recommended; Deepgram offers free starting credit). Without it, the app falls back to local `faster-whisper`.
-
-### Install and run
-
-```powershell
-git clone https://github.com/mateusmirandaia/interview-copilot.git
-cd interview-copilot
-.\scripts\setup.ps1                       # creates .venv and installs the package (add -Whisper for local STT)
-.\.venv\Scripts\Activate.ps1
-
-# API keys: either environment variables (then open a NEW terminal)...
-setx ANTHROPIC_API_KEY "sk-ant-..."
-setx DEEPGRAM_API_KEY "your-deepgram-key"
-# ...or a .env file at the repo root (copy .env.example to .env and fill it in)
-
-python -m interview_copilot check         # keys, profile files, ready answers, tokens, 4 sample questions
-python -m interview_copilot simulate "Tell me about yourself."
-python -m interview_copilot test-audio    # play a video: records 8 s to logs\capture_test.wav with a level meter
-python -m interview_copilot run           # the overlay with live audio
+```
+profiles/me/
+├── profile.toml          ⚙️  name, target role, native language, research domains, transcript fixes
+├── 01-instructions/      🎯  how to behave for this candidate and this interview
+├── 02-resume/            👤  your resume: who you are
+├── 03-projects/          🏆  your real cases, the only source of stories
+├── 04-skills/            🛠️  technical knowledge, one file per skill or language
+├── 05-ready-answers/     📝  prepared answers, shown verbatim when the question matches
+├── 06-job/               💼  the target job, company and interviewer notes
+├── 07-official-docs/     📚  links.txt + downloaded official pages (outrank general knowledge)
+├── vocabulary.txt        🔤  names and terms the transcription must get right
+└── evals/questions.json  🧪  test questions with expected and forbidden terms
 ```
 
-The default profile is the fictional example, so every command works right after setup. Point to your own profile with `--profile profiles\me` or in `config\settings.local.toml`.
+| Folder / file | What to put there |
+|---|---|
+| `01-instructions/` | Interview focus, tone, candidate-specific do's and don'ts |
+| `02-resume/` | Summary, stack, experience, education |
+| `03-projects/` | One `## Case` per real story (situation, action, numbers), with a `- **Keywords:**` line, plus a *Topic → case* map |
+| `04-skills/` | `python.md`, `sql.md`, `fastapi.md`... what you know and how you'd explain it |
+| `05-ready-answers/` | One `##` heading per question, the answer below it (`.md` or `.docx`) |
+| `06-job/` | Job description, company facts, questions you want to ask |
+| `07-official-docs/` | One URL per line in `links.txt`, then run `download-docs` |
 
-Shortcut: `.\scripts\run.ps1` activates the venv and runs any command (default `run`); `scripts\run.cmd` does the same on double-click.
+### 🪄 Make it yours
 
-## Test it with a YouTube mock interview
+```powershell
+Copy-Item -Recurse profiles\_template profiles\me    # gitignored: your data never goes to GitHub
+# fill in the folders, then:
+python -m interview_copilot check --profile profiles\me
+python -m interview_copilot run   --profile profiles\me
+```
 
-1. Open YouTube and search for **"mock job interview questions and answers"** (or a technical one, such as "Python backend interview questions").
-2. Check the audio: `python -m interview_copilot test-audio` while the video plays. The level meter must move with the video. If it stays flat, run `python -m interview_copilot devices` and set `[audio] device_name`.
-3. Try the terminal prototype: `python -m interview_copilot mvp` (capture + transcription + translation), then `mvp --suggest` to add answers.
-4. Run the full app: `python -m interview_copilot run` and play the video.
-
-More smoke tests and the end-to-end checklist: [docs/TESTING.md](docs/TESTING.md).
-
-## Hotkeys
-
-| Action | Global (call window in focus) | Overlay in focus |
-|---|---|---|
-| Suggest now (current transcript, or repeat the last question) | `Ctrl+Alt+S` | `F8` |
-| Research the last question in the official docs (web search) | `Ctrl+Alt+D` | `F7` |
-| Clear the screen | `Ctrl+Alt+C` | `F9` |
-| Pause / resume | `Ctrl+Alt+P` | `F10` |
-| Scroll the answer | `Ctrl+Alt+Down` / `Ctrl+Alt+Up` | arrow keys or mouse wheel |
-
-Global hotkeys are configurable in `[hotkeys]` (pynput format).
-
-## Configuration
-
-Three layers, from general to specific:
-
-| File | Committed | Purpose |
-|---|---|---|
-| `config/settings.toml` | yes | All defaults: models, effort, answer length, STT, audio, UI, hotkeys, evals |
-| `config/settings.local.toml` | no (gitignored) | Your overrides, deep-merged on top of the defaults. Only write the keys you change |
-| `profiles/<name>/profile.toml` | per profile | Candidate data, ready-answers file, research domains, transcript replacements |
-
-Example `config/settings.local.toml`:
+To make it the default, create `config\settings.local.toml` (also gitignored):
 
 ```toml
 [profile]
 path = "profiles/me"
-
-[stt]
-pause_ms = 800        # wait a bit longer before deciding the question ended
 ```
 
-Secrets come only from the environment (`ANTHROPIC_API_KEY`, `DEEPGRAM_API_KEY`) or a `.env` file at the repo root; real environment variables win. Every command also accepts `--settings PATH` and `--profile PATH`.
-
-## Evals
-
-`python -m interview_copilot eval` runs every question in `profiles/<name>/evals/questions.json` through the real engine and writes a report:
-
-- timings (first token, first content, total) and required / forbidden terms;
-- an LLM judge (`claude-sonnet-5-5`) scoring six criteria from 0 to 2: correctness, real cases, simplicity, focus, speakable, answers the question;
-- automatic checks: more than one real case in an answer, answers over `answer_words_max`;
-- worst 10 answers, recurring problems, improvement suggestions, transcription-variant table;
-- comparison with a previous round (`--round v2 --compare-with results_v1.json`).
-
-Reports go to `logs/evals/`. The workflow (run, read, adjust files, rerun) is in [docs/CUSTOMIZING.md](docs/CUSTOMIZING.md#refine-iteratively-with-evals).
-
-## Project structure
-
-```
-interview-copilot/
-├── config/settings.toml          # committed defaults (settings.local.toml overrides, gitignored)
-├── profiles/
-│   ├── README.md                 # what each profile folder is for
-│   ├── _template/                # empty skeleton to copy
-│   └── example/                  # fictional, fully working profile (Alex Morgan)
-├── src/interview_copilot/
-│   ├── cli.py  settings.py  app.py  console.py  render.py
-│   ├── audio/      capture.py                    # WASAPI loopback, resampling to 16 kHz mono
-│   ├── stt/        base.py  deepgram.py  whisper.py
-│   ├── knowledge/  loader.py  ready_answers.py  vocabulary.py  docs_downloader.py
-│   ├── ai/         prompts.py  engine.py  parsing.py
-│   ├── ui/         overlay.py                    # tkinter always-on-top window
-│   └── evals/      runner.py  report.py  judge.py
-├── scripts/      setup.ps1  run.ps1  run.cmd
-├── tests/        # pytest, offline, mock HTTP server
-├── docs/         ARCHITECTURE.md  CUSTOMIZING.md  TESTING.md  TROUBLESHOOTING.md
-├── logs/         # runtime logs, answer-selection log, eval reports (gitignored)
-└── .github/workflows/ci.yml      # ruff + pytest on Ubuntu, Python 3.11 / 3.12
-```
-
-## Responsible use
-
-- **Check the rules of each interview.** Many hiring processes do not allow assistance tools during interviews or assessments. Respect them, and disclose the tool when that is expected.
-- **Recording consent.** The app transcribes the other side of a call. Follow the laws and policies on recording and transcription where you and the interviewer are.
-- **Designed for practice and accessibility**: rehearsing with mock interviews, refining your answers with evals, and supporting non-native speakers who need a translation to follow the conversation.
-- **Never invent experience.** The copilot is built to use only what is in your profile, and to say "I haven't done that" when it is not there. Keep your files honest; the tool cannot make up for a profile that is not true.
-
-## Roadmap
-
-- Audio capture on macOS and Linux.
-- Interview languages other than English (`[stt] language`), with translation in both directions.
-- More STT providers behind the `Transcriber` interface.
-- Packaged Windows executable.
-- Eval history viewer (charts across rounds).
-
-## Documentation
-
-- [Architecture](docs/ARCHITECTURE.md)
-- [Customizing your profile](docs/CUSTOMIZING.md)
-- [Testing](docs/TESTING.md)
-- [Troubleshooting](docs/TROUBLESHOOTING.md)
-- [Changelog](CHANGELOG.md)
-
-## License
-
-[MIT](LICENSE) © 2026 Mateus Maia Miranda
+Writing rules and the full step-by-step guide: [docs/CUSTOMIZING.md](docs/CUSTOMIZING.md). Want to see a finished profile first? Open [`profiles/example/`](profiles/example/).
 
 ---
 
-Built by **Mateus Maia Miranda**.
+## ⌨️ Hotkeys
+
+| Action | Global (call in focus) | Overlay in focus |
+|---|---|---|
+| Suggest now / repeat the last question | `Ctrl+Alt+S` | `F8` |
+| Research the last question in the official docs | `Ctrl+Alt+D` | `F7` |
+| Clear the screen | `Ctrl+Alt+C` | `F9` |
+| Pause / resume | `Ctrl+Alt+P` | `F10` |
+| Scroll the answer | `Ctrl+Alt+↓` / `Ctrl+Alt+↑` | arrows or mouse wheel |
+
+All global hotkeys are configurable in `[hotkeys]`.
+
+---
+
+## 🧪 Evals: measure and refine
+
+```powershell
+python -m interview_copilot eval --round v1                       # run + judge + report
+# edit your files...
+python -m interview_copilot eval --round v2 --compare-with results_v1.json   # see what improved
+```
+
+Each round writes `logs/evals/report_<round>.md` with:
+
+- ⏱️ timings (first token, first content, total) and expected / forbidden terms
+- ⚖️ an LLM judge (`claude-sonnet-5-5`) scoring **correctness, real cases, simplicity, focus, speakable, answers the question** (0–2 each)
+- 🔎 automatic checks: more than one case per answer, answers over the word limit
+- 📉 the worst 10 answers, recurring problems and concrete suggestions
+
+The loop is simple: **run → read the report → fix your files → run again.** Details: [docs/TESTING.md](docs/TESTING.md).
+
+---
+
+## ⚙️ Configuration
+
+| File | Committed | Purpose |
+|---|---|---|
+| `config/settings.toml` | ✅ | All defaults: models, answer length, STT, audio, UI, hotkeys, evals |
+| `config/settings.local.toml` | ❌ gitignored | Your overrides, merged on top. Only write what you change |
+| `profiles/<name>/profile.toml` | per profile | Candidate data, ready-answers file, research domains, transcript fixes |
+| `.env` | ❌ gitignored | `ANTHROPIC_API_KEY`, `DEEPGRAM_API_KEY` |
+
+<details>
+<summary>All commands</summary>
+
+| Command | What it does |
+|---|---|
+| `run` | The overlay with live audio |
+| `simulate "question"` | One answer in the terminal, no audio |
+| `check` | Validates keys, profile, ready answers and token size |
+| `devices` | Lists audio devices |
+| `test-audio` | Records 8 s of system audio with a level meter |
+| `mvp [--suggest]` | Terminal prototype: capture + transcription + translation (+ answers) |
+| `download-docs` | Downloads the pages in `07-official-docs/links.txt` |
+| `eval` | Runs the eval set (`--round`, `--compare-with`, `--ids`, `--no-judge`, `--rejudge`, `--parallel`) |
+
+Global options: `--profile PATH`, `--settings PATH`.
+</details>
+
+<details>
+<summary>Project structure</summary>
+
+```
+interview-copilot/
+├── config/settings.toml          # committed defaults
+├── profiles/
+│   ├── _template/                # empty skeleton to copy
+│   └── example/                  # fictional, fully working profile
+├── src/interview_copilot/
+│   ├── audio/      capture.py    # WASAPI loopback, 16 kHz mono
+│   ├── stt/        deepgram.py  whisper.py
+│   ├── knowledge/  loader.py  ready_answers.py  vocabulary.py  docs_downloader.py
+│   ├── ai/         prompts.py  engine.py  parsing.py
+│   ├── ui/         overlay.py    # tkinter always-on-top window
+│   └── evals/      runner.py  judge.py  report.py
+├── scripts/        setup.ps1  run.ps1  run.cmd
+├── tests/          # pytest, offline, with a mock API server
+└── docs/           ARCHITECTURE  CUSTOMIZING  TESTING  TROUBLESHOOTING
+```
+</details>
+
+<details>
+<summary>Development</summary>
+
+```powershell
+pip install -e ".[dev]"
+ruff check src tests
+pytest -q            # ~100 tests, offline, about 10 s
+```
+
+CI runs ruff and pytest on Ubuntu with Python 3.11 and 3.12 for every push.
+</details>
+
+---
+
+## 🤝 Responsible use
+
+- **Check the rules of each interview.** Many hiring processes do not allow assistance tools. Respect them, and disclose the tool when that is expected.
+- **Recording consent.** The app transcribes the other side of a call. Follow the recording and transcription laws where you and the interviewer are.
+- **Made for practice and accessibility:** rehearsing with mock interviews, refining answers with evals, and helping non-native speakers follow the conversation.
+- **Never invent experience.** The copilot only uses what is in your profile. Keep your files honest.
+
+---
+
+## 🗺️ Roadmap
+
+- [ ] Audio capture on macOS and Linux
+- [ ] Interview languages beyond English, with two-way translation
+- [ ] More STT providers behind the `Transcriber` interface
+- [ ] Packaged Windows executable
+- [ ] Eval history viewer with charts across rounds
+
+## 📖 Documentation
+
+[Architecture](docs/ARCHITECTURE.md) · [Customizing](docs/CUSTOMIZING.md) · [Testing](docs/TESTING.md) · [Troubleshooting](docs/TROUBLESHOOTING.md) · [Changelog](CHANGELOG.md)
+
+---
+
+<div align="center">
+
+Built by **Mateus Maia Miranda** · [MIT License](LICENSE)
+
+If this project helped you, consider giving it a ⭐
+
+</div>
